@@ -29,14 +29,14 @@ model PostgresqlDatasource {
   tables      PostgresqlDatasourceTable[]
   constraints PostgresqlDatasourceConstraint[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum PostgresqlDatasourceState {
   LOADED
   NOT_LOADED
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model PostgresqlDatasourceConstraint {
@@ -51,14 +51,14 @@ model PostgresqlDatasourceConstraint {
   datasource   PostgresqlDatasource                  @relation(fields: [datasourceId], references: [id], onDelete: Cascade)
   datasourceId String                                @db.Uuid
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum PostgresqlDatasourceConstraintKeyType {
   PRIMARY_KEY
   FOREIGN_KEY
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model PostgresqlDatasourceTable {
@@ -72,7 +72,7 @@ model PostgresqlDatasourceTable {
   columns            PostgresqlDatasourceTableColumn[]
   datatransPipelines DatatransPipeline[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model PostgresqlDatasourceTableColumn {
@@ -86,7 +86,7 @@ model PostgresqlDatasourceTableColumn {
   table           PostgresqlDatasourceTable @relation(fields: [tableId], references: [id], onDelete: Cascade)
   tableId         Int
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model ElasticsearchDatasource {
@@ -97,14 +97,14 @@ model ElasticsearchDatasource {
   updatedAt DateTime                       @updatedAt
   indices   ElasticsearchDatasourceIndex[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum ElasticsearchDatasourceState {
   LOADED
   NOT_LOADED
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model ElasticsearchDatasourceIndex {
@@ -119,14 +119,14 @@ model ElasticsearchDatasourceIndex {
   databoards         ElasticsearchDataboard[]
   datatransPipelines DatatransPipeline[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum ElasticsearchDatasourceIndexState {
   NO_MAPPING
   HAS_MAPPING
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model ElasticsearchDatasourceIndexField {
@@ -141,7 +141,7 @@ model ElasticsearchDatasourceIndexField {
   indexId          Int
   databoardColumns ElasticsearchDataboardColumn[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model DatatransPipeline {
@@ -157,7 +157,7 @@ model DatatransPipeline {
   toIndexId         Int
   datatransMissions DatatransMission[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model DatatransMission {
@@ -171,7 +171,7 @@ model DatatransMission {
   datatransPipelineId String                @db.Uuid
   tasks               DatatransTask[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum DatatransMissionState {
@@ -180,7 +180,7 @@ enum DatatransMissionState {
   STARTED
   STOPPED
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model DatatransTask {
@@ -195,7 +195,7 @@ model DatatransTask {
   mission      DatatransMission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
   missionId    String             @db.Uuid
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum DatatransTaskState {
@@ -203,7 +203,7 @@ enum DatatransTaskState {
   IN_QUEUE
   DONE
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model ElasticsearchDataboard {
@@ -217,14 +217,14 @@ model ElasticsearchDataboard {
   datasourceIndexId Int
   columns           ElasticsearchDataboardColumn[]
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum ElasticsearchDataboardState {
   LOADED
   NOT_LOADED
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 model ElasticsearchDataboardColumn {
@@ -245,7 +245,7 @@ model ElasticsearchDataboardColumn {
   datasourceIndexField   ElasticsearchDatasourceIndexField     @relation(fields: [datasourceIndexFieldId], references: [id])
   datasourceIndexFieldId Int
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
 
 enum ElasticsearchDataboardColumnFormatter {
@@ -256,5 +256,5 @@ enum ElasticsearchDataboardColumnFormatter {
   HIGHLIGHT_INCOMPLETE
   CURRENCY
 
-  @@schema("application/engined")
+  @@schema("microservice/engined")
 }
