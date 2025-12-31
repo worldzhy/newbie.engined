@@ -1,19 +1,10 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-  NotFoundException,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {DatatransPipelineService} from './pipeline.service';
 import {PostgresqlDatasourceTableService} from '../../datasource/postgresql/table/table.service';
 import {ElasticsearchDatasourceIndexService} from '../../datasource/elasticsearch/index/index.service';
 import {DatatransPipeline, Prisma} from '@prisma/client';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datatrans Pipeline')
 @ApiBearerAuth()
@@ -28,8 +19,7 @@ export class DatatransPipelineController {
 
   @Post('')
   @ApiBody({
-    description:
-      "The 'name', 'status' and 'clientEmail' are required in request body.",
+    description: "The 'name', 'status' and 'clientEmail' are required in request body.",
     examples: {
       a: {
         summary: '1. Create',
@@ -48,18 +38,10 @@ export class DatatransPipelineController {
     body: Prisma.DatatransPipelineUncheckedCreateInput
   ): Promise<DatatransPipeline> {
     // [step 1] Check if the fromTable and toIndex are existed.
-    if (
-      !(await this.postgresqlDatasourceTableService.checkExistence(
-        body.fromTableId
-      ))
-    ) {
+    if (!(await this.postgresqlDatasourceTableService.checkExistence(body.fromTableId))) {
       throw new NotFoundException('Not found the postgresql table.');
     }
-    if (
-      !(await this.elasticsearchDatasourceIndexService.checkExistence(
-        body.toIndexId
-      ))
-    ) {
+    if (!(await this.elasticsearchDatasourceIndexService.checkExistence(body.toIndexId))) {
       throw new NotFoundException('Not found the elasticsearch index.');
     }
 
@@ -81,9 +63,7 @@ export class DatatransPipelineController {
   }
 
   @Get(':pipelineId')
-  async getPipeline(
-    @Param('pipelineId') pipelineId: string
-  ): Promise<DatatransPipeline | null> {
+  async getPipeline(@Param('pipelineId') pipelineId: string): Promise<DatatransPipeline | null> {
     return await this.prisma.datatransPipeline.findUnique({
       where: {id: pipelineId},
     });
@@ -115,9 +95,7 @@ export class DatatransPipelineController {
   }
 
   @Delete(':pipelineId')
-  async deletePipeline(
-    @Param('pipelineId') pipelineId: string
-  ): Promise<DatatransPipeline> {
+  async deletePipeline(@Param('pipelineId') pipelineId: string): Promise<DatatransPipeline> {
     return await this.prisma.datatransPipeline.delete({
       where: {id: pipelineId},
     });

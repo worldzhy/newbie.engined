@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {PostgresqlDatasource, PostgresqlDatasourceTable} from '@prisma/client';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()
 export class PostgresqlDatasourceService {
@@ -10,25 +10,19 @@ export class PostgresqlDatasourceService {
   //    ! Postgresql table operations      //
   // ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄ //
 
-  async selectTables(
-    datasource: PostgresqlDatasource
-  ): Promise<{name: string; schema: string}[]> {
+  async selectTables(datasource: PostgresqlDatasource): Promise<{name: string; schema: string}[]> {
     const tables = await this.prisma.$queryRaw<
       {table_name: string; table_schema: string}[]
     >`SELECT table_name, table_schema FROM information_schema.tables WHERE (table_schema = ${datasource.schema})`;
 
     return tables.flatMap(item =>
-      item.table_name === '_prisma_migrations'
-        ? []
-        : {name: item.table_name, schema: item.table_schema}
+      item.table_name === '_prisma_migrations' ? [] : {name: item.table_name, schema: item.table_schema}
     );
   }
 
   async selectColumns(
     table: PostgresqlDatasourceTable
-  ): Promise<
-    {column_name: string; data_type: string; ordinal_position: number}[]
-  > {
+  ): Promise<{column_name: string; data_type: string; ordinal_position: number}[]> {
     return await this.prisma.$queryRaw<
       {column_name: string; data_type: string; ordinal_position: number}[]
     >`SELECT * FROM information_schema.columns WHERE (table_schema = ${table['datasource'].schema} AND table_name = ${table.name})`;
@@ -69,9 +63,7 @@ export class PostgresqlDatasourceService {
   }
 
   async countTable(table: string): Promise<{count: bigint}[]> {
-    return this.prisma.$queryRawUnsafe<{count: bigint}[]>(
-      `SELECT COUNT(*) FROM "${table}"`
-    );
+    return this.prisma.$queryRawUnsafe<{count: bigint}[]>(`SELECT COUNT(*) FROM "${table}"`);
   }
 
   /* End */

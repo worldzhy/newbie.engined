@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {DatatransPipeline, PostgresqlDatasourceTable} from '@prisma/client';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()
 export class DatatransPipelineService {
@@ -21,9 +21,7 @@ export class DatatransPipelineService {
     let recordAverageSize = 1.0;
 
     // [step 1] Get the total count of the table records.
-    countResult = await this.prisma.$queryRawUnsafe(
-      `SELECT COUNT(*) FROM "${fromTable.schema}"."${fromTable.name}"`
-    );
+    countResult = await this.prisma.$queryRawUnsafe(`SELECT COUNT(*) FROM "${fromTable.schema}"."${fromTable.name}"`);
 
     // The type of countResult[0].count is bigint and it need to be converted to number.
     const total = Number(countResult[0].count);
@@ -33,9 +31,7 @@ export class DatatransPipelineService {
       // Use 'map' instead of 'forEach'
       // https://www.becomebetterprogrammer.com/javascript-foreach-async-await/
       pipeline.hasManyTables.map(async tableName => {
-        countResult = await this.prisma.$queryRawUnsafe(
-          `SELECT COUNT(*) FROM "${fromTable.schema}"."${tableName}"`
-        );
+        countResult = await this.prisma.$queryRawUnsafe(`SELECT COUNT(*) FROM "${fromTable.schema}"."${tableName}"`);
 
         childTables.push({
           name: tableName,
@@ -49,9 +45,7 @@ export class DatatransPipelineService {
     // [step 3] Get the total count of the parent tables' records.
     await Promise.all(
       pipeline.belongsToTables.map(async tableName => {
-        countResult = await this.prisma.$queryRawUnsafe(
-          `SELECT COUNT(*) FROM "${fromTable.schema}"."${tableName}"`
-        );
+        countResult = await this.prisma.$queryRawUnsafe(`SELECT COUNT(*) FROM "${fromTable.schema}"."${tableName}"`);
 
         parentTables.push({
           name: tableName,

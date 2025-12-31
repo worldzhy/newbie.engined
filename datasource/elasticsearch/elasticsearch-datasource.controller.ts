@@ -1,22 +1,8 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-  NotFoundException,
-  Query,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException, Query} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
-import {
-  ElasticsearchDatasource,
-  ElasticsearchDatasourceState,
-  Prisma,
-} from '@prisma/client';
+import {ElasticsearchDatasource, ElasticsearchDatasourceState, Prisma} from '@prisma/client';
 import {ElasticsearchDatasourceService} from './elasticsearch-datasource.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datasource - Elasticsearch')
 @ApiBearerAuth()
@@ -45,10 +31,7 @@ export class ElasticsearchDatasourceController {
   }
 
   @Get('')
-  async getElasticsearchDatasources(
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number
-  ) {
+  async getElasticsearchDatasources(@Query('page') page: number, @Query('pageSize') pageSize: number) {
     return await this.prisma.findManyInManyPages({
       model: Prisma.ModelName.ElasticsearchDatasource,
       pagination: {page, pageSize},
@@ -87,9 +70,7 @@ export class ElasticsearchDatasourceController {
   }
 
   @Delete(':datasourceId')
-  async deleteElasticsearchDatasource(
-    @Param('datasourceId') datasourceId: string
-  ): Promise<ElasticsearchDatasource> {
+  async deleteElasticsearchDatasource(@Param('datasourceId') datasourceId: string): Promise<ElasticsearchDatasource> {
     return await this.prisma.elasticsearchDatasource.delete({
       where: {id: datasourceId},
     });
@@ -99,9 +80,7 @@ export class ElasticsearchDatasourceController {
    * Load an elasticsearch datasource.
    */
   @Patch(':datasourceId/load')
-  async loadElasticsearchDatasource(
-    @Param('datasourceId') datasourceId: string
-  ): Promise<ElasticsearchDatasource> {
+  async loadElasticsearchDatasource(@Param('datasourceId') datasourceId: string): Promise<ElasticsearchDatasource> {
     // [step 1] Get datasource.
     const datasource = await this.prisma.elasticsearchDatasource.findUnique({
       where: {id: datasourceId},
@@ -111,8 +90,7 @@ export class ElasticsearchDatasourceController {
     }
 
     // [step 2] Get mappings of all indices.
-    const result =
-      await this.elasticsearchDatasourceService.getMapping(datasource);
+    const result = await this.elasticsearchDatasourceService.getMapping(datasource);
 
     // [step 3] Save fields of all indices.
     const indexNames = Object.keys(result.body);
@@ -133,17 +111,13 @@ export class ElasticsearchDatasourceController {
 
       // Save fields of the index if they exist.
       if ('properties' in result.body[indexName].mappings) {
-        const fieldNames = Object.keys(
-          result.body[indexName].mappings.properties
-        );
+        const fieldNames = Object.keys(result.body[indexName].mappings.properties);
         await this.prisma.elasticsearchDatasourceIndexField.createMany({
           data: fieldNames.map(fieldName => {
             return {
               name: fieldName,
               type: result.body[indexName].mappings.properties[fieldName].type,
-              properties:
-                result.body[indexName].mappings.properties[fieldName]
-                  .properties,
+              properties: result.body[indexName].mappings.properties[fieldName].properties,
               indexId: index.id,
             };
           }),
@@ -162,9 +136,7 @@ export class ElasticsearchDatasourceController {
    * Unload an elasticsearch datasource.
    */
   @Patch(':datasourceId/unload')
-  async unloadPostgresqlDatasource(
-    @Param('datasourceId') datasourceId: string
-  ): Promise<ElasticsearchDatasource> {
+  async unloadPostgresqlDatasource(@Param('datasourceId') datasourceId: string): Promise<ElasticsearchDatasource> {
     // [step 1] Get datasource.
     const datasource = await this.prisma.elasticsearchDatasource.findUnique({
       where: {id: datasourceId},

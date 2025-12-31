@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-  NotFoundException,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {
   Prisma,
@@ -18,8 +9,8 @@ import {
   ElasticsearchDatasourceIndex,
   PostgresqlDatasourceConstraintKeyType,
 } from '@prisma/client';
-import {AwsSqsService} from '@microservices/aws/aws-sqs.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {AwsSqsService} from '@microservices/aws-sqs/aws-sqs.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 import {ConfigService} from '@nestjs/config';
 
 @ApiTags('Datatrans Task')
@@ -46,9 +37,7 @@ export class DatatransTaskController {
       },
     },
   })
-  async createDatatransTask(
-    @Body() body: Prisma.DatatransTaskUncheckedCreateInput
-  ): Promise<DatatransTask> {
+  async createDatatransTask(@Body() body: Prisma.DatatransTaskUncheckedCreateInput): Promise<DatatransTask> {
     return await this.prisma.datatransTask.create({data: body});
   }
 
@@ -58,9 +47,7 @@ export class DatatransTaskController {
   }
 
   @Get(':taskId')
-  async getDatatransTask(
-    @Param('taskId') taskId: number
-  ): Promise<DatatransTask | null> {
+  async getDatatransTask(@Param('taskId') taskId: number): Promise<DatatransTask | null> {
     return await this.prisma.datatransTask.findUnique({
       where: {id: taskId},
     });
@@ -78,9 +65,7 @@ export class DatatransTaskController {
   }
 
   @Delete(':taskId')
-  async deleteDatatransTask(
-    @Param('taskId') taskId: number
-  ): Promise<DatatransTask> {
+  async deleteDatatransTask(@Param('taskId') taskId: number): Promise<DatatransTask> {
     return await this.prisma.datatransTask.delete({
       where: {id: taskId},
     });
@@ -88,9 +73,7 @@ export class DatatransTaskController {
 
   //* Process the task.
   @Patch(':taskId/process')
-  async stopDatatransTask(
-    @Param('taskId') taskId: number
-  ): Promise<DatatransTask> {
+  async stopDatatransTask(@Param('taskId') taskId: number): Promise<DatatransTask> {
     // [step 1] Get task.
     const task = await this.prisma.datatransTask.findUniqueOrThrow({
       where: {id: taskId},
@@ -116,16 +99,12 @@ export class DatatransTaskController {
     }
     hasManyTables.forEach(tableName => {
       if (!(tableName in Prisma.ModelName)) {
-        throw new NotFoundException(
-          'Not found one of pipeline->hasManyTables.'
-        );
+        throw new NotFoundException('Not found one of pipeline->hasManyTables.');
       }
     });
     belongsToTables.forEach(tableName => {
       if (!(tableName in Prisma.ModelName)) {
-        throw new NotFoundException(
-          'Not found one of pipeline->belongsToTables.'
-        );
+        throw new NotFoundException('Not found one of pipeline->belongsToTables.');
       }
     });
 
@@ -137,16 +116,15 @@ export class DatatransTaskController {
     // [step 3-2] Attach child tables' records to fromTable.
     for (let index = 0; index < hasManyTables.length; index++) {
       const childTableName = hasManyTables[index];
-      const constraint =
-        await this.prisma.postgresqlDatasourceConstraint.findFirstOrThrow({
-          where: {
-            AND: [
-              {table: childTableName},
-              {keyType: PostgresqlDatasourceConstraintKeyType.FOREIGN_KEY},
-              {foreignTable: fromTable.name},
-            ],
-          },
-        });
+      const constraint = await this.prisma.postgresqlDatasourceConstraint.findFirstOrThrow({
+        where: {
+          AND: [
+            {table: childTableName},
+            {keyType: PostgresqlDatasourceConstraintKeyType.FOREIGN_KEY},
+            {foreignTable: fromTable.name},
+          ],
+        },
+      });
 
       constraint.keyColumn;
 
@@ -167,9 +145,7 @@ export class DatatransTaskController {
 
   //* Send to queue, then AWS Lambda will process the task.
   @Patch(':taskId/task2sqs')
-  async startDatatransTask(
-    @Param('taskId') taskId: number
-  ): Promise<DatatransTask> {
+  async startDatatransTask(@Param('taskId') taskId: number): Promise<DatatransTask> {
     // [step 1] Get task.
     const task = await this.prisma.datatransTask.findUniqueOrThrow({
       where: {id: taskId},
@@ -177,9 +153,7 @@ export class DatatransTaskController {
 
     // [step 2] Send task to queue.
     const output = await this.sqs.sendMessage({
-      queueUrl: this.configService.getOrThrow<string>(
-        'microservices.aws.sqs.queueUrl'
-      ),
+      queueUrl: this.configService.getOrThrow<string>('microservices.aws.sqs.queueUrl'),
       body: {missionId: task.missionId, take: task.take, skip: task.skip},
     });
 

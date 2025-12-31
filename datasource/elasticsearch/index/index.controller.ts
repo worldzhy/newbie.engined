@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Put,
-  Body,
-  Param,
-  BadRequestException,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Put, Body, Param, BadRequestException} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {
   ElasticsearchDatasourceIndex,
@@ -17,7 +7,7 @@ import {
   Prisma,
 } from '@prisma/client';
 import {ElasticsearchDatasourceIndexService} from './index.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datasource - Elasticsearch')
 @ApiBearerAuth()
@@ -54,9 +44,7 @@ export class ElasticsearchDatasourceIndexController {
   }
 
   @Get('')
-  async getElasticsearchDatasourceIndices(): Promise<
-    ElasticsearchDatasourceIndex[]
-  > {
+  async getElasticsearchDatasourceIndices(): Promise<ElasticsearchDatasourceIndex[]> {
     return await this.prisma.elasticsearchDatasourceIndex.findMany({});
   }
 
@@ -81,14 +69,11 @@ export class ElasticsearchDatasourceIndexController {
   }
 
   @Delete(':indexId')
-  async deleteElasticsearchDatasourceIndex(
-    @Param('indexId') indexId: number
-  ): Promise<ElasticsearchDatasourceIndex> {
+  async deleteElasticsearchDatasourceIndex(@Param('indexId') indexId: number): Promise<ElasticsearchDatasourceIndex> {
     // [step 1] Get the index.
-    const index =
-      await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
-        where: {id: indexId},
-      });
+    const index = await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
+      where: {id: indexId},
+    });
 
     // [step 2] Delete an index in elasticsearch.
     await this.elasticsearchDatasourceIndexService.createIndex(index.name);
@@ -104,11 +89,10 @@ export class ElasticsearchDatasourceIndexController {
     @Param('indexId') indexId: number
   ): Promise<ElasticsearchDatasourceIndex> {
     // [step 1] Get index.
-    const index =
-      await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
-        where: {id: indexId},
-        include: {fields: true},
-      });
+    const index = await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
+      where: {id: indexId},
+      include: {fields: true},
+    });
 
     // [step 2] Construct and put mapping.
     const mapping = {properties: {}};
@@ -121,10 +105,7 @@ export class ElasticsearchDatasourceIndexController {
         properties: field.properties,
       };
     }
-    await this.elasticsearchDatasourceIndexService.putMapping(
-      index.name,
-      mapping
-    );
+    await this.elasticsearchDatasourceIndexService.putMapping(index.name, mapping);
 
     // [step 3] Update index state.
     return this.prisma.elasticsearchDatasourceIndex.update({
@@ -134,22 +115,15 @@ export class ElasticsearchDatasourceIndexController {
   }
 
   @Get(':indexId/mapping')
-  async getElasticsearchDatasourceIndexMapping(
-    @Param('indexId') indexId: number
-  ) {
-    const index =
-      await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
-        where: {id: indexId},
-      });
+  async getElasticsearchDatasourceIndexMapping(@Param('indexId') indexId: number) {
+    const index = await this.prisma.elasticsearchDatasourceIndex.findUniqueOrThrow({
+      where: {id: indexId},
+    });
     if (index.state === ElasticsearchDatasourceIndexState.NO_MAPPING) {
-      throw new BadRequestException(
-        "Bad Request to get a NO_MAPPING index's mapping"
-      );
+      throw new BadRequestException("Bad Request to get a NO_MAPPING index's mapping");
     }
 
-    return await this.elasticsearchDatasourceIndexService.getMapping(
-      index.name
-    );
+    return await this.elasticsearchDatasourceIndexService.getMapping(index.name);
   }
 
   /* End */

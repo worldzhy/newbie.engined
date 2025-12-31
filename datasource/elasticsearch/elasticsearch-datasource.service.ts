@@ -1,12 +1,12 @@
 import {RequestParams} from '@elastic/elasticsearch';
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {ElasticsearchDatasource} from '@prisma/client';
-import {ElasticService} from '@toolkit/elastic/elastic.service';
+import {ElasticsearchService} from '@microservices/elasticsearch/elasticsearch.service';
 import {get as lodash_get, split as lodash_split} from 'lodash';
 
 @Injectable()
 export class ElasticsearchDatasourceService {
-  constructor(private readonly elastic: ElasticService) {}
+  constructor(private readonly elastic: ElasticsearchService) {}
 
   // ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄ //
   //   ! Elasticsearch index operations    //
@@ -16,9 +16,7 @@ export class ElasticsearchDatasourceService {
     // [step 1] Get mappings of all indices.
     const result = await this.elastic.indices.getMapping();
     if (result.statusCode !== 200) {
-      throw new NotFoundException(
-        'Not found the elasticsearch mappings of indices'
-      );
+      throw new NotFoundException('Not found the elasticsearch mappings of indices');
     }
 
     return result;

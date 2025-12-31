@@ -1,16 +1,8 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {PostgresqlDatasourceTable, Prisma} from '@prisma/client';
 import {PostgresqlDatasourceTableService} from './table.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datasource - Postgresql')
 @ApiBearerAuth()
@@ -52,9 +44,7 @@ export class PostgresqlDatasourceTableController {
   }
 
   @Get(':tableId')
-  async getPostgresqlDatasourceTable(
-    @Param('tableId') tableId: number
-  ): Promise<PostgresqlDatasourceTable | null> {
+  async getPostgresqlDatasourceTable(@Param('tableId') tableId: number): Promise<PostgresqlDatasourceTable | null> {
     return await this.prisma.postgresqlDatasourceTable.findUnique({
       where: {id: tableId},
     });
@@ -72,13 +62,9 @@ export class PostgresqlDatasourceTableController {
   }
 
   @Delete(':tableId')
-  async deletePostgresqlDatasourceTable(
-    @Param('tableId') tableId: number
-  ): Promise<PostgresqlDatasourceTable> {
+  async deletePostgresqlDatasourceTable(@Param('tableId') tableId: number): Promise<PostgresqlDatasourceTable> {
     // [step 1] Get the table.
-    const table = await this.prisma.postgresqlDatasourceTable.findUniqueOrThrow(
-      {where: {id: tableId}}
-    );
+    const table = await this.prisma.postgresqlDatasourceTable.findUniqueOrThrow({where: {id: tableId}});
 
     // [step 2] Delete table in Postgresql.
     await this.postgresqlDatasourceTableService.dropTable(table.name);
@@ -90,9 +76,7 @@ export class PostgresqlDatasourceTableController {
   }
 
   @Get(':tableId/columns')
-  async getPostgresqlDatasourceColumns(
-    @Param('tableId') tableId: number
-  ): Promise<PostgresqlDatasourceTable> {
+  async getPostgresqlDatasourceColumns(@Param('tableId') tableId: number): Promise<PostgresqlDatasourceTable> {
     return await this.postgresqlDatasourceTableService.findUniqueOrThrow({
       where: {id: tableId},
       include: {columns: true},

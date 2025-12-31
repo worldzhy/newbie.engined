@@ -1,12 +1,12 @@
 import {BadRequestException, Injectable} from '@nestjs/common';
-import {ElasticService} from '@toolkit/elastic/elastic.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {ElasticsearchService} from '@microservices/elasticsearch/elasticsearch.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()
 export class ElasticsearchDatasourceIndexService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly elastic: ElasticService
+    private readonly elastic: ElasticsearchService
   ) {}
 
   async checkExistence(id: number): Promise<boolean> {
@@ -23,27 +23,21 @@ export class ElasticsearchDatasourceIndexService {
   async createIndex(indexName: string) {
     const result = await this.elastic.indices.create({index: indexName});
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to create an elasticsearch index.'
-      );
+      throw new BadRequestException('Bad Request to create an elasticsearch index.');
     }
   }
 
   async deleteIndex(indexName: string) {
     const result = await this.elastic.indices.delete({index: indexName});
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to delete an elasticsearch index.'
-      );
+      throw new BadRequestException('Bad Request to delete an elasticsearch index.');
     }
   }
 
   async getMapping(indexName: string) {
     const result = await this.elastic.indices.getMapping({index: indexName});
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to get elasticsearch index mappings.'
-      );
+      throw new BadRequestException('Bad Request to get elasticsearch index mappings.');
     }
 
     return result;
@@ -55,18 +49,14 @@ export class ElasticsearchDatasourceIndexService {
       body: mapping,
     });
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to put elasticsearch index mappings.'
-      );
+      throw new BadRequestException('Bad Request to put elasticsearch index mappings.');
     }
   }
 
   async getSettings(indexName: string) {
     const result = await this.elastic.indices.getSettings();
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to get elasticsearch index settings.'
-      );
+      throw new BadRequestException('Bad Request to get elasticsearch index settings.');
     }
 
     return result;
@@ -75,9 +65,7 @@ export class ElasticsearchDatasourceIndexService {
   async putSettings(indexName: string) {
     const result = await this.elastic.indices.putSettings();
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to put elasticsearch index settings.'
-      );
+      throw new BadRequestException('Bad Request to put elasticsearch index settings.');
     }
   }
 
@@ -88,9 +76,7 @@ export class ElasticsearchDatasourceIndexService {
       format: 'json',
     });
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to get elasticsearch indices.'
-      );
+      throw new BadRequestException('Bad Request to get elasticsearch indices.');
     }
 
     return result;
@@ -102,9 +88,7 @@ export class ElasticsearchDatasourceIndexService {
       format: 'json',
     });
     if (result.statusCode !== 200) {
-      throw new BadRequestException(
-        'Bad Request to get elasticsearch aliases.'
-      );
+      throw new BadRequestException('Bad Request to get elasticsearch aliases.');
     }
 
     return result;

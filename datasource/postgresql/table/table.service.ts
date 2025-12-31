@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {PostgresqlDatasourceTable, Prisma} from '@prisma/client';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()
 export class PostgresqlDatasourceTableService {
@@ -13,10 +13,7 @@ export class PostgresqlDatasourceTableService {
     this.prisma.$use(async (params, next) => {
       if (params.model === 'PostgresqlDatasourceTable') {
         if (params.action === 'findUnique') {
-          if (
-            params.args['where']['id'] &&
-            typeof params.args['where']['id'] === 'string'
-          ) {
+          if (params.args['where']['id'] && typeof params.args['where']['id'] === 'string') {
             params.args['where']['id'] = parseInt(params.args['where']['id']);
           }
         }
@@ -24,9 +21,7 @@ export class PostgresqlDatasourceTableService {
       return next(params);
     });
 
-    return await this.prisma.postgresqlDatasourceTable.findUniqueOrThrow(
-      params
-    );
+    return await this.prisma.postgresqlDatasourceTable.findUniqueOrThrow(params);
   }
 
   async checkExistence(id: number): Promise<boolean> {
@@ -41,15 +36,11 @@ export class PostgresqlDatasourceTableService {
   // ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄  ⌄ //
 
   async createTable(tableName: string) {
-    await this.prisma.$executeRawUnsafe(
-      `CREATE TABLE IF NOT EXISTS ${tableName} ()`
-    );
+    await this.prisma.$executeRawUnsafe(`CREATE TABLE IF NOT EXISTS ${tableName} ()`);
   }
 
   async dropTable(tableName: string) {
-    await this.prisma.$executeRawUnsafe(
-      `DROP TABLE IF EXISTS ${tableName} CASCADE`
-    );
+    await this.prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS ${tableName} CASCADE`);
   }
 
   /* End */

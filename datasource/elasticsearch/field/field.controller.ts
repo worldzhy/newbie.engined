@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-  Query,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param, Query} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {ElasticsearchDatasourceIndexField, Prisma} from '@prisma/client';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datasource - Elasticsearch')
 @ApiBearerAuth()
@@ -40,10 +31,7 @@ export class ElasticsearchDatasourceIndexFieldController {
   }
 
   @Get('')
-  async getElasticsearchDatasourceIndexFields(
-    @Query('page') page: number,
-    @Query('pageSize') pageSize: number
-  ) {}
+  async getElasticsearchDatasourceIndexFields(@Query('page') page: number, @Query('pageSize') pageSize: number) {}
 
   @Get(':indexId')
   async getElasticsearchDatasourceIndexField(

@@ -1,17 +1,9 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Body,
-  Param,
-} from '@nestjs/common';
+import {Controller, Delete, Get, Patch, Post, Body, Param} from '@nestjs/common';
 import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
 import {PostgresqlDatasourceTableColumn, Prisma} from '@prisma/client';
 import {PostgresqlDatasourceTableService} from '../table/table.service';
 import {PostgresqlDatasourceTableColumnService} from './column.service';
-import {PrismaService} from '@toolkit/prisma/prisma.service';
+import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datasource - Postgresql')
 @ApiBearerAuth()
@@ -41,9 +33,7 @@ export class PostgresqlDatasourceTableColumnController {
     @Body() body: Prisma.PostgresqlDatasourceTableColumnUncheckedCreateInput
   ): Promise<PostgresqlDatasourceTableColumn> {
     // [step 1] Get the table.
-    const table = await this.postgresqlDatasourceTableService.findUniqueOrThrow(
-      {where: {id: body.tableId}}
-    );
+    const table = await this.postgresqlDatasourceTableService.findUniqueOrThrow({where: {id: body.tableId}});
 
     // [step 2] Add column in postgresql table.
     await this.postgresqlDatasourceTableColumnService.addColulmn({
@@ -60,9 +50,7 @@ export class PostgresqlDatasourceTableColumnController {
   }
 
   @Get('')
-  async getPostgresqlDatasourceTableColumns(): Promise<
-    PostgresqlDatasourceTableColumn[]
-  > {
+  async getPostgresqlDatasourceTableColumns(): Promise<PostgresqlDatasourceTableColumn[]> {
     return await this.prisma.postgresqlDatasourceTableColumn.findMany({});
   }
 
@@ -91,11 +79,10 @@ export class PostgresqlDatasourceTableColumnController {
     @Param('columnId') columnId: number
   ): Promise<PostgresqlDatasourceTableColumn> {
     // [step 1] Get the column.
-    const column =
-      await this.prisma.postgresqlDatasourceTableColumn.findUniqueOrThrow({
-        where: {id: columnId},
-        include: {table: true},
-      });
+    const column = await this.prisma.postgresqlDatasourceTableColumn.findUniqueOrThrow({
+      where: {id: columnId},
+      include: {table: true},
+    });
 
     // [step 2] Drop column in postgresql table.
     await this.postgresqlDatasourceTableColumnService.dropColulmn(column);
