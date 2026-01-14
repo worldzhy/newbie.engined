@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {PostgresqlDatasource, PostgresqlDatasourceTable} from '@prisma/client';
+import {PostgresqlDatasource, PostgresqlDatasourceTable} from '@generated/prisma/client';
 import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()

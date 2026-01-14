@@ -1,9 +1,9 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
 import {DatatransPipelineService} from './pipeline.service';
 import {PostgresqlDatasourceTableService} from '../../datasource/postgresql/table/table.service';
 import {ElasticsearchDatasourceIndexService} from '../../datasource/elasticsearch/index/index.service';
-import {DatatransPipeline, Prisma} from '@prisma/client';
+import {DatatransPipeline, Prisma} from '@generated/prisma/client';
 import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datatrans Pipeline')

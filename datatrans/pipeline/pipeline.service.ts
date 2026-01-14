@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {DatatransPipeline, PostgresqlDatasourceTable} from '@prisma/client';
+import {DatatransPipeline, PostgresqlDatasourceTable} from '@generated/prisma/client';
 import {PrismaService} from '@framework/prisma/prisma.service';
 
 @Injectable()

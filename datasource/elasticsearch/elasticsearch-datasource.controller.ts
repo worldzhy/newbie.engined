@@ -1,6 +1,6 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException, Query} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
-import {ElasticsearchDatasource, ElasticsearchDatasourceState, Prisma} from '@prisma/client';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
+import {ElasticsearchDatasource, ElasticsearchDatasourceState, Prisma} from '@generated/prisma/client';
 import {ElasticsearchDatasourceService} from './elasticsearch-datasource.service';
 import {PrismaService} from '@framework/prisma/prisma.service';
 

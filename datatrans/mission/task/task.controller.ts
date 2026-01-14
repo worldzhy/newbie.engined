@@ -1,14 +1,14 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
 import {
-  Prisma,
+  DatatransPipeline,
   DatatransTask,
   DatatransTaskState,
-  DatatransPipeline,
-  PostgresqlDatasourceTable,
   ElasticsearchDatasourceIndex,
   PostgresqlDatasourceConstraintKeyType,
-} from '@prisma/client';
+  PostgresqlDatasourceTable,
+  Prisma,
+} from '@generated/prisma/client';
 import {AwsSqsService} from '@microservices/aws-sqs/aws-sqs.service';
 import {PrismaService} from '@framework/prisma/prisma.service';
 import {ConfigService} from '@nestjs/config';

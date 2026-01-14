@@ -1,6 +1,6 @@
 import {RequestParams} from '@elastic/elasticsearch';
 import {Injectable, NotFoundException} from '@nestjs/common';
-import {ElasticsearchDatasource} from '@prisma/client';
+import {ElasticsearchDatasource} from '@generated/prisma/client';
 import {ElasticsearchService} from '@microservices/elasticsearch/elasticsearch.service';
 import {get as lodash_get, split as lodash_split} from 'lodash';
 

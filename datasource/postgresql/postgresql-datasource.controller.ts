@@ -1,15 +1,15 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Delete,
   Get,
+  NotFoundException,
+  Param,
   Patch,
   Post,
-  Body,
-  Param,
-  BadRequestException,
-  NotFoundException,
 } from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
 import {
   PostgresqlDatasource,
   PostgresqlDatasourceConstraint,
@@ -17,7 +17,7 @@ import {
   PostgresqlDatasourceState,
   PostgresqlDatasourceTable,
   Prisma,
-} from '@prisma/client';
+} from '@generated/prisma/client';
 import {PostgresqlDatasourceTableColumnService} from './column/column.service';
 import {PostgresqlDatasourceService} from './postgresql-datasource.service';
 import {PostgresqlDatasourceTableService} from './table/table.service';

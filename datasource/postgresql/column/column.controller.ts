@@ -1,6 +1,6 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
-import {PostgresqlDatasourceTableColumn, Prisma} from '@prisma/client';
+import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
+import {PostgresqlDatasourceTableColumn, Prisma} from '@generated/prisma/client';
 import {PostgresqlDatasourceTableService} from '../table/table.service';
 import {PostgresqlDatasourceTableColumnService} from './column.service';
 import {PrismaService} from '@framework/prisma/prisma.service';

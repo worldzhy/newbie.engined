@@ -1,6 +1,6 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
-import {ElasticsearchDataboardColumn, Prisma} from '@prisma/client';
+import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
+import {ElasticsearchDataboardColumn, Prisma} from '@generated/prisma/client';
 import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Databoard - Elasticsearch')

@@ -1,11 +1,11 @@
-import {Controller, Delete, Get, Patch, Post, Put, Body, Param, BadRequestException} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
+import {BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Put} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
 import {
   ElasticsearchDatasourceIndex,
   ElasticsearchDatasourceIndexField,
   ElasticsearchDatasourceIndexState,
   Prisma,
-} from '@prisma/client';
+} from '@generated/prisma/client';
 import {ElasticsearchDatasourceIndexService} from './index.service';
 import {PrismaService} from '@framework/prisma/prisma.service';
 

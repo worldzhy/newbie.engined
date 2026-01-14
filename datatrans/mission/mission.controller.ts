@@ -1,6 +1,6 @@
-import {Controller, Delete, Get, Patch, Post, Body, Param, NotFoundException} from '@nestjs/common';
-import {ApiTags, ApiBearerAuth, ApiBody} from '@nestjs/swagger';
-import {Prisma, DatatransMission, DatatransMissionState} from '@prisma/client';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post} from '@nestjs/common';
+import {ApiBearerAuth, ApiBody, ApiTags} from '@nestjs/swagger';
+import {DatatransMission, DatatransMissionState, Prisma} from '@generated/prisma/client';
 import {PrismaService} from '@framework/prisma/prisma.service';
 
 @ApiTags('Datatrans Mission')
